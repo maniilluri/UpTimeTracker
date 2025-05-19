@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # 🚀 Uptime checker backend (scheduler/monitor)
+  uptimechecker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: uptimechecker
+    restart: always
+    depends_on:
+      - metrics_exporter
+    volumes:
+      - ./logs:/app/logs
+      - ./monitor/config.json:/app/monitor/config.json
+      - /tmp/uptime-metrics:/tmp/metrics
+
+  # 📊 Prometheus-compatible metrics exporter
+  metrics_exporter:
+    build:
+      context: .
+      dockerfile: exporter/Dockerfile
+    container_name: metrics_exporter
+    ports:
+      - "8001:8000"  # This is still for raw metrics, NOT the UI
+    restart: always
+    volumes:
+      - /tmp/uptime-metrics:/tmp/metrics
+
+  # 🌐 Your Flask UI dashboard
+  ui:
+    build:
+      context: ./ui
+    # container_name: uptime_ui
+    ports:
+      - "8080:8000"  # Serve Flask UI at localhost:8080
+    restart: always
+    depends_on:
+      - uptimechecker
+    volumes:
+      - ./logs:/app/logs
+      - ./monitor/config.json:/app/monitor/config.json
+      # - ./monitor:/app/monitor
+
+  # 📈 Prometheus to scrape metrics
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # 📨 Pushgateway (optional, for custom metric push)
+  pushgateway:
+    image: prom/pushgateway
+    ports:
+      - "9091:9091"
+
+  # 📊 Grafana visualization
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage:

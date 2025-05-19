@@ -1,0 +1,51 @@
+body {
+    background-color: #1e0033;
+    color: white;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 2em;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #2b0055;
+    padding: 2em;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #9900ff;
+}
+
+input,
+button {
+    padding: 0.6em;
+    margin: 0.5em;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
+button {
+    background: #9900ff;
+    color: white;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2em;
+}
+
+th,
+td {
+    padding: 1em;
+    border-bottom: 1px solid #555;
+}
+
+td.green {
+    color: #00ff99;
+}
+
+td.red {
+    color: #ff3333;
+}

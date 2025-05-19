@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>UptimeTrackr</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>UptimeTrackr</h1>
+        <form action="/add" method="POST">
+            <input type="text" name="url" placeholder="Enter URL" required>
+            <input type="number" name="interval" placeholder="Interval (sec)" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <table>
+            <tr>
+                <th>URL</th>
+                <th>Status</th>
+                <th>History</th>
+                <th>Action</th>
+            </tr>
+            {% for entry in data %}
+            <tr>
+                <td>{{ entry.url }}</td>
+                <td class="{{ entry.status }}">{{ entry.status }}</td>
+                <td>{{ entry.history }}</td>
+                <td><form action="/remove" method="POST" style="display:inline;">
+                    <input type="hidden" name="url" value="{{ entry.url }}">
+                    <button type="submit">Remove</button>
+                </form>
+
+            </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+
+</html>
